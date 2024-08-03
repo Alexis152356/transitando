@@ -4,9 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\productoController;
 
 
-Route::get('/', function () {
-    return view('login');
-});
+
 
 Route::get('inicio', function () {
     return view('inicio');
@@ -91,7 +89,10 @@ Route::get('/donacion', function () {
     return view('donacion');
 });
 
-
+// Ruta pública para la página de pago
+Route::get('/pay', function () {
+    return view('pay');
+});
 
 // Rutas que requieren autenticación para ver contribuyentes
 Route::middleware('auth')->group(function () {
@@ -108,25 +109,27 @@ Route::middleware('auth')->group(function () {
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ProfileController;
 
-
 Route::middleware(['auth'])->group(function () {
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
 
-    // Ruta para el dashboard
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
 });
 
-// Rutas de autenticación
 Route::middleware('guest')->group(function () {
-    Route::get('/', [AuthenticatedSessionController::class, 'create'])->name('login');
-    Route::post('login', [AuthenticatedSessionController::class, 'store']);
+ 
+    
+    Route::post('/login', [AuthenticatedSessionController::class, 'store']);
 });
 
-Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
+// Ensure no conflicting routes in auth.php
 require __DIR__.'/auth.php';
+
+
+
 
 
 
@@ -154,17 +157,5 @@ Route::middleware('auth')->group(function () {
 
 // Ruta para mostrar el PDF sin requerir autenticación
 Route::get('/single', [PdfController::class, 'show'])->name('single.show');
-
-
-use App\Http\Controllers\RegistroController;
-
-// Mostrar el formulario de registro
-Route::get('/registro', [RegistroController::class, 'create'])->name('registro.create');
-
-// Guardar el registro de voluntarios
-Route::post('/registro', [RegistroController::class, 'store'])->name('registro.store');
-
-// Mostrar la lista de voluntarios registrados, requiere autenticación
-Route::get('/unidos', [RegistroController::class, 'index'])->name('registro.index')->middleware('auth');
 
 
