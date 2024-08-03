@@ -158,4 +158,3 @@ Route::middleware('auth')->group(function () {
 // Ruta para mostrar el PDF sin requerir autenticación
 Route::get('/single', [PdfController::class, 'show'])->name('single.show');
 
-
